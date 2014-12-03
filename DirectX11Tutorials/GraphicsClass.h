@@ -3,6 +3,8 @@
 
 #include <Windows.h>
 
+#include "D3DClass.h"
+
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
@@ -23,5 +25,5 @@ private:
 	bool Render();
 
 private:
-
+	D3DClass* _D3D;
 };
