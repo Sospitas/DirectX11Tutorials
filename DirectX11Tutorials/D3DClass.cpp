@@ -287,3 +287,125 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hW
 
 	return true;
 }
+
+void D3DClass::Shutdown()
+{
+	if (_swapChain)
+	{
+		_swapChain->SetFullscreenState(false, NULL);
+	}
+
+	if (_rasterState)
+	{
+		_rasterState->Release();
+		_rasterState = NULL;
+	}
+
+	if (_depthStencilView)
+	{
+		_depthStencilView->Release();
+		_depthStencilView = NULL;
+	}
+
+	if (_depthStencilState)
+	{
+		_depthStencilState->Release();
+		_depthStencilState = NULL;
+	}
+
+	if (_depthStencilBuffer)
+	{
+		_depthStencilBuffer->Release();
+		_depthStencilBuffer = NULL;
+	}
+
+	if (_renderTargetView)
+	{
+		_renderTargetView->Release();
+		_renderTargetView = NULL;
+	}
+
+	if (_deviceContext)
+	{
+		_deviceContext->Release();
+		_deviceContext = NULL;
+	}
+
+	if (_device)
+	{
+		_device->Release();
+		_device = NULL;
+	}
+
+	if (_swapChain)
+	{
+		_swapChain->Release();
+		_swapChain = NULL;
+	}
+
+	return;
+}
+
+void D3DClass::BeginScene(float red, float green, float blue, float alpha)
+{
+	float color[4] = { red, green, blue, alpha };
+
+	_deviceContext->ClearRenderTargetView(_renderTargetView, color);
+
+	_deviceContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	return;
+}
+
+void D3DClass::EndScene()
+{
+	if (_vsync_enabled)
+	{
+		// Lock the screen re fresh rate
+		_swapChain->Present(1, 0);
+	}
+	else
+	{
+		// Present as fast as possible
+		_swapChain->Present(0, 0);
+	}
+
+	return;
+}
+
+ID3D11Device* D3DClass::GetDevice()
+{
+	return _device;
+}
+
+ID3D11DeviceContext* D3DClass::GetDeviceContext()
+{
+	return _deviceContext;
+}
+
+void D3DClass::GetProjectionMatrix(D3DXMATRIX& projectionMatrix)
+{
+	projectionMatrix = _projectionMatrix;
+	return;
+}
+
+void D3DClass::GetWorldMatrix(D3DXMATRIX& worldMatrix)
+{
+	worldMatrix = _worldMatrix;
+	return;
+}
+
+void D3DClass::GetOrthoMatrix(D3DXMATRIX& orthoMatrix)
+{
+	orthoMatrix = _orthoMatrix;
+	return;
+}
+
+
+void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
+{
+	strcpy_s(cardName, 128, _videoCardDescription);
+	memory = _videoCardMemory;
+
+	return;
+}
